@@ -189,7 +189,7 @@ void TestStringify() {
     }
     {
         vector<runtime::Method> methods;
-        methods.push_back({"__str__"s, {}, make_unique<NumericConst>(842)});
+        methods.push_back({STR_METHOD, {}, make_unique<NumericConst>(842)});
 
         runtime::Class cls("BoxedValue"s, std::move(methods), nullptr);
 

@@ -135,8 +135,7 @@ std::optional<Token> Lexer::Read(char cur)
 
 std::optional<string> Lexer::ReadWord(char cur) {
     if(COMP_ID_START ) {
-        string result;
-        result += cur;
+        string result{cur};
         in_.get(cur);
         while(in_.good() && (COMP_ID_START || COMP_NUM) ) {
             result += cur;
@@ -171,11 +170,11 @@ std::optional<string> Lexer::ReadString(char cur) {
                 in_.get(cur);
                 if(cur == '"') {
                     result += '"';
-                }else if(cur == '\'') {
+                } else if(cur == '\'') {
                     result += '\'';
-                }else if(cur == 't') {
+                } else if(cur == 't') {
                     result += '\t';
-                }else if(cur == 'n') {
+                } else if(cur == 'n') {
                     result += '\n';
                 }
                 in_.get(cur);
@@ -191,33 +190,53 @@ std::optional<string> Lexer::ReadString(char cur) {
 
 std::optional<Token> Lexer::CheckAtSpecWord(string_view word)
 {
-    if(word == "class"sv) {
-        return Token(token_type::Class{});
-    } else if (word == "return"sv) {
-        return Token(token_type::Return{});
-    } else if (word == "if"sv) {
-        return Token(token_type::If{});
-    } else if (word == "else"sv) {
-        return Token(token_type::Else{});
-    } else if (word == "def"sv) {
-        return Token(token_type::Def{});
-    } else if (word == "print"sv) {
-        return Token(token_type::Print{});
-    } else if (word == "or"sv) {
-        return Token(token_type::Or{});
-    } else if (word == "None"sv) {
-        return Token(token_type::None{});
-    } else if (word == "and"sv) {
-        return Token(token_type::And{});
-    } else if (word == "not"sv) {
-        return Token(token_type::Not{});
-    } else if (word == "True"sv) {
-        return Token(token_type::True{});
-    } else if (word == "False"sv) {
-        return Token(token_type::False{});
+    static std::unordered_map<std::string_view, Token> tokens;
+    if(tokens.empty()) {
+        tokens.emplace("class"sv, token_type::Class{});
+        tokens.emplace("return"sv, token_type::Return{});
+        tokens.emplace("if"sv, token_type::If{});
+        tokens.emplace("else"sv, token_type::Else{});
+        tokens.emplace("def"sv, token_type::Def{});
+        tokens.emplace("print"sv, token_type::Print{});
+        tokens.emplace("or"sv, token_type::Or{});
+        tokens.emplace("None"sv, token_type::None{});
+        tokens.emplace("and"sv, token_type::And{});
+        tokens.emplace("not"sv, token_type::Not{});
+        tokens.emplace("True"sv, token_type::True{});
+        tokens.emplace("False"sv, token_type::False{});
+    }
+    if (tokens.count(word) != 0) {
+        return tokens.at(word);
     }
     return nullopt;
 }
+//    if(word == "class"sv) {
+//        return Token(token_type::Class{});
+//    } else if (word == "return"sv) {
+//        return Token(token_type::Return{});
+//    } else if (word == "if"sv) {
+//        return Token(token_type::If{});
+//    } else if (word == "else"sv) {
+//        return Token(token_type::Else{});
+//    } else if (word == "def"sv) {
+//        return Token(token_type::Def{});
+//    } else if (word == "print"sv) {
+//        return Token(token_type::Print{});
+//    } else if (word == "or"sv) {
+//        return Token(token_type::Or{});
+//    } else if (word == "None"sv) {
+//        return Token(token_type::None{});
+//    } else if (word == "and"sv) {
+//        return Token(token_type::And{});
+//    } else if (word == "not"sv) {
+//        return Token(token_type::Not{});
+//    } else if (word == "True"sv) {
+//        return Token(token_type::True{});
+//    } else if (word == "False"sv) {
+//        return Token(token_type::False{});
+//    }
+//    return nullopt;
+
 
 std::optional<Token> Lexer::CheckAtIndent(char cur)
 {

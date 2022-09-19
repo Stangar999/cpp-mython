@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <vector>
 
+static const std::string STR_METHOD = "__str__";
+
 namespace runtime {
 
 // Контекст исполнения инструкций Mython
@@ -202,6 +204,26 @@ bool Equal(const ObjectHolder& lhs, const ObjectHolder& rhs, Context& context);
  *
  * Параметр context задаёт контекст для выполнения метода __lt__
  */
+template <typename Comparator>
+bool Compare(const ObjectHolder& lhs, const ObjectHolder& rhs, Context& context,
+             Comparator comparator, const std::string& method_name) {
+    using namespace std::literals;
+    if(lhs.TryAs<Number>() && rhs.TryAs<Number>() ) {
+        return comparator(lhs.TryAs<Number>()->GetValue(), rhs.TryAs<Number>()->GetValue());
+    }
+    if(lhs.TryAs<String>() && rhs.TryAs<String>() ) {
+        return comparator(lhs.TryAs<String>()->GetValue(), rhs.TryAs<String>()->GetValue());
+    }
+    if(lhs.TryAs<Bool>() && rhs.TryAs<Bool>() ) {
+        return comparator(lhs.TryAs<Bool>()->GetValue(), rhs.TryAs<Bool>()->GetValue());
+    }
+    if(auto cli = lhs.TryAs<ClassInstance>(); cli) {
+        if(cli->HasMethod(method_name,1)){
+           return cli->Call(method_name, {rhs}, context).TryAs<Bool>()->GetValue();
+        }
+    }
+    throw std::runtime_error("Cannot compare objects for "s + method_name);
+}
 bool Less(const ObjectHolder& lhs, const ObjectHolder& rhs, Context& context);
 // Возвращает значение, противоположное Equal(lhs, rhs, context)
 bool NotEqual(const ObjectHolder& lhs, const ObjectHolder& rhs, Context& context);

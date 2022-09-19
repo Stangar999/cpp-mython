@@ -513,13 +513,13 @@ void TestClassInstance() {
         return ObjectHolder::Own(String{"result"s});
     };
 
-    methods.push_back({"__str__", {}, make_unique<TestMethodBody>(str_body)});
+    methods.push_back({STR_METHOD, {}, make_unique<TestMethodBody>(str_body)});
 
     Class cls{"Test"s, move(methods), nullptr};
     ClassInstance instance{cls};
 
     ASSERT_EQUAL(&instance.Fields(), &const_cast<const ClassInstance&>(instance).Fields());
-    ASSERT(instance.HasMethod("__str__"s, 0));
+    ASSERT(instance.HasMethod(STR_METHOD, 0));
 
     ostringstream out;
     DummyContext ctx;
