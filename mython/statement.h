@@ -157,7 +157,6 @@ public:
     explicit UnaryOperation(std::unique_ptr<Statement> argument)
         : argument_(std::move(argument))
     {
-        // Реализуйте метод самостоятельно
     }
 private:
     std::unique_ptr<Statement> argument_;
@@ -185,7 +184,6 @@ public:
         :lhs_(std::move(lhs))
         ,rhs_(std::move(rhs))
     {
-        // Реализуйте метод самостоятельно
     }
     std::unique_ptr<Statement> lhs_;
     std::unique_ptr<Statement> rhs_;

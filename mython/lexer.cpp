@@ -82,7 +82,6 @@ Lexer::Lexer(std::istream& input)
     :in_(input)
 {
     NextToken();
-    // Реализуйте конструктор самостоятельно
 }
 
 const Token& Lexer::CurrentToken() const {
